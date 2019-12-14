@@ -1,0 +1,10 @@
+{
+    "name": "yt-downloader",
+    "scripts": {
+        "start": "node server.js"
+    },
+    "dependencies": {
+        "express": "^4.17.1",
+        "node-notifier": "^6.0.0"
+    }
+}
