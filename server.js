@@ -1,38 +1,46 @@
 #! /usr/bin/env node
 
 const {spawn} = require('child_process')
-const notifier = require('node-notifier')
+const path = require('path')
 const express = require('express')
 const app = express()
 const port = 9311
-const downloadPath = process.argv[2] || process.env.YT_DOWNLOAD_PATH || process.cwd()
+const videoPath = process.argv[2] || process.cwd()
+const audioPath = process.argv[3] || videoPath
 
 app.get('/', (req, res) => {
-    let yt = spawn('youtube-dl', ['--no-mtime', '-o', `${downloadPath}/%(title)s.%(ext)s`, req.query.v])
-    let ytTitle = spawn('youtube-dl', ['--get-title', req.query.v])
-    let video = {}
+    let url = req.query.v
+    let audioonly = false
+    let downloadPath = videoPath
+    if (req.query.a) {
+        url = req.query.a
+        audioonly = true
+        downloadPath = audioPath
+    }
 
-    ytTitle.stdout.on('data', (title) => video.title = title)
-    yt.on('close', (code) => {
-        if (code == 0) {
-            function notifySuccess() {
-                notifier.notify({
-                    title: 'YT-Downloader',
-                    message: `${video.title || 'Video'} successfully downloaded to ${downloadPath}`
-                })
-            }
-            if (ytTitle.exitCode == null) {
-                ytTitle.on('close', notifySuccess)
-            } else {
-                notifySuccess()
-            }
+    if (url && url.startsWith('http')) {
+        let yt
+        if (audioonly) {
+            yt = spawn('youtube-dl', ['--extract-audio',
+                '--audio-format', 'mp3', '--no-mtime', '-o',
+                `${path.join(downloadPath, '%(title)s.part')}`, '--exec',
+                `node ${path.join(__dirname, 'notifier.js')}`,
+                '--no-post-overwrites', '--', url],
+                {stdio: 'ignore'})
         } else {
-            notifier.notify({
-                title: 'YT-Downloader',
-                message: 'Something went wrong'
-            })
+            yt = spawn('youtube-dl', ['--no-mtime', '-o',
+                `${path.join(downloadPath, '%(title)s.%(ext)s')}`, '--exec',
+                `node ${path.join(__dirname, 'notifier.js')}`, '--', url],
+                {stdio: 'ignore'})
         }
-    })
+
+        yt.on('close', (code) => {
+            if (code != 0) {
+                spawn('node', [path.join(__dirname, 'notifier.js'),
+                    'Something went wrong'])
+            }
+        })
+    }
 
     res.set('Access-Control-Allow-Origin', '*')
     res.end()
