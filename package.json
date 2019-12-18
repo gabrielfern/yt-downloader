@@ -5,6 +5,6 @@
     },
     "dependencies": {
         "express": "^4.17.1",
-        "node-notifier": "^6.0.0"
+        "node-notifier": "git+https://github.com/gabrielfern/node-notifier.git"
     }
 }
