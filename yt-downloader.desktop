@@ -1,0 +1,10 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Version=1.0
+Name=YT-Downloader
+Icon=ABSOLUTE_PATH/yt-downloader/browser-extension/icon.png
+Type=Application
+Exec=ABSOLUTE_PATH/yt-downloader/server.js ABSOLUTE_PATH/Videos ABSOLUTE_PATH/Music
+Categories=Audio;AudioVideo
+GenericName=Download videos and music
+StartupNotify=false
