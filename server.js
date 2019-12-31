@@ -5,8 +5,12 @@ const path = require('path')
 const express = require('express')
 const app = express()
 const port = 9311
-const videoPath = process.argv[2] || process.cwd()
-const audioPath = process.argv[3] || videoPath
+
+let key
+let posArgs = process.argv.slice(2).filter(arg => !arg.startsWith('--key=') ||
+    ((key = arg.slice(6)) && false))
+let videoPath = posArgs[0] || process.cwd()
+let audioPath = posArgs[1] || videoPath
 
 app.get('/', (req, res) => {
     let url = req.query.v
@@ -18,7 +22,7 @@ app.get('/', (req, res) => {
         downloadPath = audioPath
     }
 
-    if (url && url.startsWith('http')) {
+    if (url && url.startsWith('http') && (!key || key == req.query.k)) {
         let yt
         if (audioonly) {
             yt = spawn('youtube-dl', ['--extract-audio',

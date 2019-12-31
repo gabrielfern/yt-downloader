@@ -1,9 +1,18 @@
 function download(mode, url) {
-    fetch(`http://localhost:9311/?${mode}=${encodeURIComponent(url)}`)
+    chrome.storage.local.get('key', ({key}) => {
+        fetch(`http://localhost:9311/?${mode}=${encodeURIComponent(url)}` +
+            `&k=${encodeURIComponent(key)}`)
+    })
 }
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
-    download(info.menuItemId, tab.url)
+    if (info.menuItemId != 'k') {
+        download(info.menuItemId, tab.url)
+    } else {
+        let newKey = prompt('Security key')
+        if (newKey != null)
+            chrome.storage.local.set({key: newKey})
+    }
 })
 
 chrome.browserAction.onClicked.addListener((tab) => {
@@ -20,5 +29,10 @@ chrome.runtime.onInstalled.addListener(() => {
         title: "Download as audio",
         contexts: ["browser_action"],
         id: "a"
+    })
+    chrome.contextMenus.create({
+        title: "Set security key",
+        contexts: ["browser_action"],
+        id: "k"
     })
 })

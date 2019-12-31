@@ -2,7 +2,7 @@
     "name": "YT-Downloader",
     "version": "1.0",
     "manifest_version": 2,
-    "permissions": ["tabs", "contextMenus"],
+    "permissions": ["tabs", "contextMenus", "storage"],
     "background": {
         "scripts": ["background.js"],
         "persistent": false

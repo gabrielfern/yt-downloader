@@ -10,7 +10,7 @@ You just click the extension in the browser toolbar and the video in the webpage
 > npm i
 
 ## Run the server
-> node server [VIDEOS_PATH] [MUSIC_PATH]
+> node server [--key=SECURITY_KEY] [VIDEOS_PATH] [MUSIC_PATH]
 
 ***
 
