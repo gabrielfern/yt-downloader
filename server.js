@@ -5,6 +5,8 @@ const path = require('path')
 const express = require('express')
 const app = express()
 const port = 9311
+const videoFormat = 'bestvideo[height<2400][width<2400]+bestaudio/best'
+const audioFormat = 'bestaudio/best'
 
 let key
 let posArgs = process.argv.slice(2).filter(arg => !arg.startsWith('--key=') ||
@@ -25,14 +27,14 @@ app.get('/', (req, res) => {
     if (url && url.startsWith('http') && (!key || key == req.query.k)) {
         let yt
         if (audioonly) {
-            yt = spawn('youtube-dl', ['--extract-audio',
+            yt = spawn('youtube-dl', ['-f', audioFormat, '--extract-audio',
                 '--audio-format', 'mp3', '--no-mtime', '-o',
                 `${path.join(downloadPath, '%(title)s.part')}`, '--exec',
                 `node ${path.join(__dirname, 'notifier.js')}`,
                 '--no-post-overwrites', '--', url],
                 {stdio: 'ignore'})
         } else {
-            yt = spawn('youtube-dl', ['--no-mtime', '-o',
+            yt = spawn('youtube-dl', ['-f', videoFormat, '--no-mtime', '-o',
                 `${path.join(downloadPath, '%(title)s.%(ext)s')}`, '--exec',
                 `node ${path.join(__dirname, 'notifier.js')}`, '--', url],
                 {stdio: 'ignore'})
