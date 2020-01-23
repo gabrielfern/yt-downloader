@@ -34,13 +34,14 @@ app.post('/', (req, res) => {
             yt = spawn('youtube-dl', ['-f', audioFormat, '--extract-audio',
                 '--audio-format', 'mp3', '--no-mtime', '-o',
                 `${path.join(downloadPath, '%(title)s.part')}`, '--exec',
-                `node ${notifierPath}`,
+                `node ${notifierPath}`, '--add-metadata', '--embed-thumbnail',
                 '--no-post-overwrites', '--', url],
                 {stdio: 'ignore'})
         } else {
             yt = spawn('youtube-dl', ['-f', videoFormat, '--no-mtime', '-o',
                 `${path.join(downloadPath, '%(title)s.%(ext)s')}`, '--exec',
-                `node ${notifierPath}`, '--', url],
+                `node ${notifierPath}`, '--add-metadata', '--embed-subs',
+                '--all-subs', '--', url],
                 {stdio: 'ignore'})
         }
 
