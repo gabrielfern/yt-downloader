@@ -2,6 +2,7 @@ function download(mode, url) {
     chrome.storage.local.get('key', ({key}) => {
         fetch(`http://localhost:9311/?${mode}=${encodeURIComponent(url)}` +
             `&k=${encodeURIComponent(key)}`)
+            .catch(() => alert('Unable to communicate with the server'))
     })
 }
 
