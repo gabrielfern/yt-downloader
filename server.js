@@ -16,7 +16,7 @@ let posArgs = process.argv.slice(2).filter(arg => !arg.startsWith('--key=') ||
 let videoPath = posArgs[0] || process.cwd()
 let audioPath = posArgs[1] || videoPath
 
-app.get('/', (req, res) => {
+app.post('/', (req, res) => {
     let url = req.query.v
     let audioonly = false
     let downloadPath = videoPath
